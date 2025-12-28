@@ -15,7 +15,7 @@ A Python utility to trigger and monitor Fivetran connector syncs via the Fivetra
 ## Setup
 
 ```bash
-git clone https://github.com/<your-username>/fivetran-sync-orchestrator.git
+git clone https://github.com/ecarasu/fivetran-sync-orchestrator.git
 cd fivetran-sync-orchestrator
 python -m venv .venv
 source .venv/bin/activate
