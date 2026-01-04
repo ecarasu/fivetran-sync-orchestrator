@@ -1,15 +1,15 @@
 import os
-import base64
 import requests
 import time
 from datetime import datetime, timedelta
+from config.connections_loader import load_connections
+from slack_notifier import notify_sync_status
 
 API_KEY = os.getenv("FIVETRAN_API_KEY")
 if not API_KEY:
     raise RuntimeError("FIVETRAN_API_KEY environment variable not set")
 
-CONNECTIONS = []
-
+CONNECTIONS = load_connections("connections.json")
 BASE_URL = "https://api.fivetran.com/v1/"
 HEADERS = {
     "Accept": "application/json;version=2",
@@ -65,6 +65,12 @@ def wait_for_sync(connection_id, poll_interval_seconds):
                 f"Connection '{connection_id}' (schema: {schema}) finished with state '{status}'. "
                 f"succeeded_at={succeeded_at}"
             )
+            notify_sync_status(
+                connection_id=connection_id,
+                status=status,
+                schema=schema,
+                succeeded_at=succeeded_at
+            )
             return status
 
         if datetime.now() > deadline:
@@ -92,7 +98,16 @@ def main():
     for conn_id, poll_interval in CONNECTIONS:
         print(f"\n=== Triggering sync for connection '{conn_id}' ===")
         try:
+            notify_sync_status(
+                message = {
+                    "text": (
+                        f"\nTriggering sync for connection '{conn_id}'\n"
+                    )
+    }
+
+            )
             trigger_sync(conn_id)
+            
         except Exception as e:
             print(f"Error triggering sync for {conn_id}: {e}")
             continue
