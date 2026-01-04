@@ -1,0 +1,15 @@
+{
+  "connections": [
+    {
+      "id": "",
+      "poll_interval_seconds": 300,
+      "Active": "Y"
+    },
+    {
+      "id": "",
+      "poll_interval_seconds": 60,
+      "Active": "N"
+    }
+    
+  ]
+}
